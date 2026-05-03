@@ -1,4 +1,3 @@
-import Url from 'licia/Url'
 import contain from 'licia/contain'
 import escapeJsStr from 'licia/escapeJsStr'
 import isUndef from 'licia/isUndef'
