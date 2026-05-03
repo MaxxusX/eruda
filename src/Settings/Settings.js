@@ -1,6 +1,6 @@
 import Tool from '../DevTools/Tool'
 import $ from 'licia/$'
-import LocalStore from 'licia/LocalStore'
+import Store from 'licia/Store'
 import uniqId from 'licia/uniqId'
 import each from 'licia/each'
 import filter from 'licia/filter'
@@ -145,6 +145,7 @@ export default class Settings extends Tool {
     })
   }
   static createCfg(name, data) {
-    return new LocalStore('eruda-' + name, data)
+    // return new LocalStore('eruda-' + name, data);
+    return new Store(data);
   }
 }
