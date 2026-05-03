@@ -1,0 +1,6 @@
+endOfLine: "crlf"
+experimentalTernaries: true
+printWidth: 100
+useTabs: true
+tabWidth: 4
+trailingComma: "es5"
