@@ -1,11 +1,4 @@
-import contain from 'licia/contain'
-import escapeJsStr from 'licia/escapeJsStr'
-import isUndef from 'licia/isUndef'
-import last from 'licia/last'
-import map from 'licia/map'
 import memStorage from 'licia/memStorage'
-import toNum from 'licia/toNum'
-import trim from 'licia/trim'
 import html from 'licia/html'
 
 // https://stackoverflow.com/questions/46318395/detecting-mobile-device-notch
@@ -33,11 +26,18 @@ export function hasSafeArea() {
 }
 
 export function escapeJsonStr(str) {
-  return escapeJsStr(str).replace(/\\'/g, "'").replace(/\t/g, '\\t')
+  return str
+    .replaceAll('"', '\\"')
+    .replaceAll("\\", "\\\\")
+    .replaceAll("\t", "\\t")
+    .replaceAll("\n", "\\n")
+    .replaceAll("\r", "\\r")
+    .replaceAll("\u2028", "\\u2028")  // Line separator
+    .replaceAll("\u2029", "\\u2029"); // Paragraph separator
 }
 
 export function safeStorage(type, memReplacement) {
-  if (isUndef(memReplacement)) memReplacement = true
+  if (memReplacement === void 0) memReplacement = true;
 
   let ret
 
@@ -76,29 +76,19 @@ export function getFileName(url) {
 }
 
 export function pxToNum(str) {
-  return toNum(str.replace('px', ''))
+  return +str.replace('px', '');
 }
 
 export function isErudaEl(el) {
-  while (el) {
-    if (el.id === 'eruda') return true
-    el = el.parentNode
-  }
+  if (el.id === 'eruda') return true
+  if (el.matches('#eruda :scope')) return true
 
   return false
 }
 
 export function isChobitsuEl(el) {
-  while (el) {
-    let className = ''
-    if (el.getAttribute) {
-      className = el.getAttribute('class') || ''
-    }
-    if (contain(className, '__chobitsu-hide__')) {
-      return true
-    }
-    el = el.parentNode
-  }
+  if (el.classList.contains('__chobitsu-hide__')) return true
+  if (el.matches('.__chobitsu-hide__ :scope')) return true
 
   return false
 }
@@ -134,8 +124,8 @@ function traverseTree(tree, handler) {
 function processClass(str) {
   const prefix = 'eruda-'
 
-  return map(trim(str).split(/\s+/), (singleClass) => {
-    if (contain(singleClass, prefix)) {
+  return str.trim().split(/\s+/).map((singleClass) => {
+    if (singleClass.includes(prefix)) {
       return singleClass
     }
 
