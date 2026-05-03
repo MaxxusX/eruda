@@ -1,8 +1,4 @@
-import toStr from 'licia/toStr';
-import each from 'licia/each';
-import filter from 'licia/filter';
 import isStr from 'licia/isStr';
-import keys from 'licia/keys';
 import kebabCase from 'licia/kebabCase';
 import defaults from 'licia/defaults';
 import themes from './themes';
@@ -13,7 +9,7 @@ let scale = 1;
 let curTheme = themes.Dark;
 
 const exports = function (css, container) {
-  css = toStr(css);
+  css = css.toString();
 
   for (let i = 0, len = styleList.length; i < len; i++) {
     if (styleList[i].css === css) return;
@@ -38,7 +34,11 @@ const exports = function (css, container) {
 
 exports.setScale = function (s) {
   scale = s;
-  resetStyles();
+
+  for (let i = 0, len = styleList.length; i < len; i++) {
+    el.innerText = 
+      styleList[i].css.replace(/(\d+)px/g, (_, $1) => +$1 * scale + 'px');
+  }
 }
 
 exports.setTheme = function (theme) {
@@ -48,7 +48,10 @@ exports.setTheme = function (theme) {
     curTheme = defaults(theme, themes.Dark);
   }
 
-  resetStyles();
+  for (let i = 0, len = styleList.length; i < len; i++) {
+    const style = styleList[i];
+    resetStyle(style.css, style.el);
+  }
 }
 
 exports.getCurTheme = () => curTheme;
@@ -56,30 +59,29 @@ exports.getCurTheme = () => curTheme;
 exports.getThemes = () => themes;
 
 exports.clear = function () {
-  each(styleList, ({ container, el }) => container.removeChild(el));
+  for (let i = 0, len = styleList.length; i < len; i++) {
+    const style = styleList[i];
+    style.container.removeChild(style.el);
+  }
   styleList = [];
 }
 
 exports.remove = function (style) {
-  styleList = filter(styleList, (s) => s !== style);
+  styleList = styleList.filter((s) => s !== style);
 
   style.container.removeChild(style.el);
 }
 
-function resetStyles() {
-  each(styleList, (style) => resetStyle(style));
-}
-
-function resetStyle({ css, el }) {
-  css = css.replace(/(\d+)px/g, ($0, $1) => +$1 * scale + 'px');
-  css = css.replace(/_/g, 'eruda-');
-  const _keys = keys(themes.Light);
-  each(_keys, (key) => {
+function resetStyle(css, el) {
+  css = css
+    .replace(/(\d+)px/g, ($0, $1) => +$1 * scale + 'px')
+    .replace(/_/g, 'eruda-');
+  for (const key of Object.keys(themes.Light)) {
     css = css.replace(
       new RegExp(`var\\(--${kebabCase(key)}\\)`, 'g'),
       curTheme[key]
     );
-  });
+  };
   el.innerText = css;
 }
 
