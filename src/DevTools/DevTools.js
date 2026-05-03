@@ -38,7 +38,7 @@ export default class DevTools extends Emitter {
       {
         transparency: 1,
         displaySize: 80,
-        theme: 'System preference',
+        theme: 'Dark',
       },
       defaults
     )
