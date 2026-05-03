@@ -67,14 +67,13 @@ export function safeStorage(type, memReplacement) {
 }
 
 export function getFileName(url) {
-  let ret = last(url.split('/'))
-
-  if (ret === '') {
-    url = new Url(url)
-    ret = url.hostname
-  }
-
-  return ret
+  const url = new URL(url);
+  if (url.pathname === "/") return url.host + url.search;
+  
+  const pathParts = url.pathname.split("/").slice(-2);
+  const lastPart = pathParts[1];
+  if (lastPart === "") return pathParts[0] + "/" + url.search;
+  return lastPart + "/" + url.search;
 }
 
 export function pxToNum(str) {
