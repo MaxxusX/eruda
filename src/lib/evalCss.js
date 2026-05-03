@@ -1,4 +1,3 @@
-import defaults from 'licia/defaults';
 import themes from './themes';
 
 let styleList = [];
@@ -43,7 +42,15 @@ exports.setTheme = function (theme) {
   if (typeof theme === "string") {
     curTheme = themes[theme] || themes.Dark;
   } else {
-    curTheme = defaults(theme, themes.Dark);
+    const lightTheme = themes.Light
+
+    for (const key of Object.keys(lightTheme)) {
+      if (typeof theme[key] === void 0) {
+        theme[key] = lightTheme[key];
+      }
+    }
+
+    curTheme = theme
   }
 
   for (let i = 0, len = styleList.length; i < len; i++) {
@@ -65,7 +72,8 @@ exports.clear = function () {
 }
 
 exports.remove = function (style) {
-  styleList = styleList.filter((s) => s !== style);
+  const idx = styleList.indexOf(style);
+  if (idx !== -1) styleList.splice(idx, 1);
 
   style.container.removeChild(style.el);
 }
