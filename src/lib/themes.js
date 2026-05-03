@@ -1,7 +1,3 @@
-import extend from 'licia/extend'
-import isArr from 'licia/isArr'
-import contain from 'licia/contain'
-
 const keyMap = [
   'background',
   'foreground',
@@ -37,39 +33,29 @@ function arrToMap(arr) {
 }
 
 function createDarkTheme(theme) {
-  if (isArr(theme)) theme = arrToMap(theme)
+  if (Array.isArray(theme)) theme = arrToMap(theme);
   if (!theme.darkerBackground) theme.darkerBackground = theme.contrast
-  return extend(
-    {
-      consoleWarnBackground: '#332a00',
-      consoleWarnForeground: '#ffcb6b',
-      consoleWarnBorder: '#650',
-      consoleErrorBackground: '#290000',
-      consoleErrorForeground: '#ff8080',
-      consoleErrorBorder: '#5c0000',
-      light: '#ccc',
-      dark: '#aaa',
-    },
-    theme
-  )
+  theme.consoleWarnBackground ??= '#332a00';
+  theme.consoleWarnForeground ??= '#ffcb6b';
+  theme.consoleWarnBorder ??= '#650';
+  theme.consoleErrorBackground ??= '#290000';
+  theme.consoleErrorForeground ??= '#ff8080';
+  theme.consoleErrorBorder ??= '#5c0000';
+  theme.light ??= '#ccc';
+  theme.dark ??= '#aaa';
 }
 
 function createLightTheme(theme) {
-  if (isArr(theme)) theme = arrToMap(theme)
+  if (Array.isArray(theme)) theme = arrToMap(theme);
   if (!theme.darkerBackground) theme.darkerBackground = theme.contrast
-  return extend(
-    {
-      consoleWarnBackground: '#fffbe5',
-      consoleWarnForeground: '#5c5c00',
-      consoleWarnBorder: '#fff5c2',
-      consoleErrorBackground: '#fff0f0',
-      consoleErrorForeground: '#f00',
-      consoleErrorBorder: '#ffd6d6',
-      light: '#fff',
-      dark: '#eee',
-    },
-    theme
-  )
+  theme.consoleWarnBackground ??= '#fffbe5';
+  theme.consoleWarnForeground ??= '#5c5c00';
+  theme.consoleWarnBorder ??= '#fff5c2';
+  theme.consoleErrorBackground ??= '#fff0f0';
+  theme.consoleErrorForeground ??= '#f00';
+  theme.consoleErrorBorder ??= '#ffd6d6';
+  theme.light ??= '#fff';
+  theme.dark ??= '#eee';
 }
 
 const darkThemes = [
@@ -88,7 +74,7 @@ const darkThemes = [
 ]
 
 export function isDarkTheme(theme) {
-  return contain(darkThemes, theme)
+  return darkThemes.includes(theme);
 }
 
 // prettier-ignore
