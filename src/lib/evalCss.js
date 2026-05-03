@@ -1,5 +1,3 @@
-import isStr from 'licia/isStr';
-import kebabCase from 'licia/kebabCase';
 import defaults from 'licia/defaults';
 import themes from './themes';
 
@@ -25,8 +23,8 @@ const exports = function (css, container) {
   
   container.appendChild(el);
 
+  resetStyle(css, el);
   const style = { css, el, container };
-  resetStyle(style);
   styleList.push(style);
 
   return style;
@@ -42,7 +40,7 @@ exports.setScale = function (s) {
 }
 
 exports.setTheme = function (theme) {
-  if (isStr(theme)) {
+  if (typeof theme === "string") {
     curTheme = themes[theme] || themes.Dark;
   } else {
     curTheme = defaults(theme, themes.Dark);
@@ -72,16 +70,15 @@ exports.remove = function (style) {
   style.container.removeChild(style.el);
 }
 
+const regUpperCase = /([A-Z])/g;
 function resetStyle(css, el) {
   css = css
-    .replace(/(\d+)px/g, ($0, $1) => +$1 * scale + 'px')
-    .replace(/_/g, 'eruda-');
+    .replaceAll(/(\d+)px/g, (_, $1) => +$1 * scale + 'px')
+    .replaceAll('_', 'eruda-');
   for (const key of Object.keys(themes.Light)) {
-    css = css.replace(
-      new RegExp(`var\\(--${kebabCase(key)}\\)`, 'g'),
-      curTheme[key]
-    );
-  };
+    const kebabCase = key.replaceAll(regUpperCase, '-$1').toLowerCase();
+    css = css.replaceAll(`var(--${kebabCase})`, curTheme[key]);
+  }
   el.innerText = css;
 }
 
